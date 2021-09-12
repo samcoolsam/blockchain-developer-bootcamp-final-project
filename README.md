@@ -1,1 +1,1 @@
-# my first git repo
+# Final Project Idea
