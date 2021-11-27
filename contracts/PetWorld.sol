@@ -30,6 +30,7 @@ contract PetWorld {
   event VetCreated(uint id);
   event PetCreated(uint id);
   event PetDeleted(uint id);
+  event PetUpdated(uint id);
   event PetSold(uint id);
   event PetGifted(uint id);
 
@@ -38,6 +39,16 @@ contract PetWorld {
     _;
   }
 
+  modifier callerIsPetOwner (uint id) { 
+    require (msg.sender == pets[id].currentOwner, "Only current owner is allowed to perform this operation"); 
+    _;
+  }
+
+modifier validPrice (uint _price) { 
+    require (_price > 0, "Please set a price > 0"); 
+    _;
+  }
+  
   modifier callerIsVet(address _address){
     bool vetMatched = false;
     for(uint i=1;i<= totalVetCount;i++){
@@ -107,6 +118,14 @@ function getPet(uint id) public view returns (uint _id, PetType _type, Gender _g
     pets[id].previousOwner = pets[id].currentOwner;
     pets[id].currentOwner = 0x0000000000000000000000000000000000000000;
     emit PetDeleted(id);    
+  }
+
+  function updatePet(uint id, bool _forSale, uint _price) public callerIsPetOwner(id) validPrice(_price){
+
+    pets[id].forSale = _forSale;
+    pets[id].price = _price;
+    
+    emit PetUpdated(id);    
   }
 
 }

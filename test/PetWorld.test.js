@@ -7,7 +7,7 @@ let PetWorld = artifacts.require("PetWorld");
 
 contract("PetWorld", function(accounts){
 
-    const [_vetSociety, vet1, vet2, owner1, owner2] = accounts;
+    const [_vetSociety, vet1, vet2, owner1, owner2, buyer1, buyer2] = accounts;
 
     let instance;
 
@@ -271,4 +271,86 @@ contract("PetWorld", function(accounts){
       });
     });
 
+
+    describe("Pet Updating - Use Cases", ()=>{
+
+      it("should allow owners to mark the pets for sale and set a valid price", async () => {
+        await instance.registerVet(vet1,{from:_vetSociety});
+        await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
+        await instance.updatePet(1,true,100,{from:owner1});
+        const tx = await instance.getPet.call(1);
+        assert.equal(
+          tx._id,
+          1,
+          "the id of the updated pet not match the expected value",
+        );
+        assert.equal(
+          tx._type,
+          PetWorld.PetType.Dog,
+          "the type of the updated pet does not match the expected value",
+        );
+        assert.equal(
+          tx._gender,
+          PetWorld.Gender.Male,
+          "the gender of the updated pet does not match the expected value",
+        );
+        assert.equal(
+          tx._dob,
+          "01-JAN-2001",
+          "the DoB of the updated pet does not match the expected value",
+        );
+        assert.equal(
+          tx._isAlive,
+          true,
+          "the isAlive status of the updated pet does not match the expected value",
+        );
+        assert.equal(
+          tx._forSale,
+          true,
+          "the forSale status of the updated pet does not match the expected value",
+        );
+        assert.equal(
+          tx._price,
+          100,
+          "the price of the updated does not match the expected value",
+        );
+        assert.equal(
+          tx._currentOwner,
+          owner1,
+          "the currentOwner of the updated does not match the expected value",
+        );
+        assert.equal(
+          tx._previousOwner,
+          0x0000000000000000000000000000000000000000,
+          "the previousOwner of the updated pet does not match the expected value",
+        );
+        assert.equal(
+          tx._uri,
+          "http://dummyurl",
+          "the offchainURI of the updated pet does not match the expected value",
+        );
+      });
+
+      it("should emit a PetUpdated event when a Pet is Updated", async () => {
+        let eventEmitted = false;
+        await instance.registerVet(vet1,{from:_vetSociety});
+        await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
+        const tx = await instance.updatePet(1,true,100,{from:owner1});
+  
+        if (tx.logs[0].event == "PetUpdated") {
+          eventEmitted = true;
+        }
+        assert.equal(
+          eventEmitted,
+          true,
+          "updating a pet should emit a PetUpdated event",
+        );
+      });
+
+      it("should NOT allow anyone except current owner to update a pet", async () => {
+        await instance.registerVet(vet1,{from:_vetSociety});
+        await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
+        await catchRevert(instance.updatePet(1,true,100, {from:owner2}));
+      });
+    });
 });
