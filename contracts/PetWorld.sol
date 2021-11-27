@@ -128,4 +128,11 @@ function getPet(uint id) public view returns (uint _id, PetType _type, Gender _g
     emit PetUpdated(id);    
   }
 
+  function giftPet(uint id, address receiver) public callerIsPetOwner(id){
+
+    pets[id].previousOwner = pets[id].currentOwner;
+    pets[id].currentOwner = receiver;
+    emit PetGifted(id);    
+  }
+
 }

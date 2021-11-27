@@ -7,7 +7,7 @@ let PetWorld = artifacts.require("PetWorld");
 
 contract("PetWorld", function(accounts){
 
-    const [_vetSociety, vet1, vet2, owner1, owner2, buyer1, buyer2] = accounts;
+    const [_vetSociety, vet1, vet2, owner1, owner2, owner3, buyer1, buyer2] = accounts;
 
     let instance;
 
@@ -353,4 +353,88 @@ contract("PetWorld", function(accounts){
         await catchRevert(instance.updatePet(1,true,100, {from:owner2}));
       });
     });
+
+    describe("Pet Gifting - Use Cases", ()=>{
+
+      it("should allow owners to gift their pets to others for FREE", async () => {
+        await instance.registerVet(vet1,{from:_vetSociety});
+        await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
+        await instance.giftPet(1,owner2,{from:owner1});
+        const tx = await instance.getPet.call(1);
+        assert.equal(
+          tx._id,
+          1,
+          "the id of the gifted pet not match the expected value",
+        );
+        assert.equal(
+          tx._type,
+          PetWorld.PetType.Dog,
+          "the type of the gifted pet does not match the expected value",
+        );
+        assert.equal(
+          tx._gender,
+          PetWorld.Gender.Male,
+          "the gender of the gifted pet does not match the expected value",
+        );
+        assert.equal(
+          tx._dob,
+          "01-JAN-2001",
+          "the DoB of the gifted pet does not match the expected value",
+        );
+        assert.equal(
+          tx._isAlive,
+          true,
+          "the isAlive status of the gifted pet does not match the expected value",
+        );
+        assert.equal(
+          tx._forSale,
+          false,
+          "the forSale status of the gifted pet does not match the expected value",
+        );
+        assert.equal(
+          tx._price,
+          0,
+          "the price of the gifted does not match the expected value",
+        );
+        assert.equal(
+          tx._currentOwner,
+          owner2,
+          "the currentOwner of the gifted does not match the expected value",
+        );
+        assert.equal(
+          tx._previousOwner,
+          owner1,
+          "the previousOwner of the gifted pet does not match the expected value",
+        );
+        assert.equal(
+          tx._uri,
+          "http://dummyurl",
+          "the offchainURI of the gifted pet does not match the expected value",
+        );
+      });
+
+      it("should emit a PetGifted event when a Pet is Gifted", async () => {
+        let eventEmitted = false;
+        await instance.registerVet(vet1,{from:_vetSociety});
+        await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
+        const tx = await instance.giftPet(1,owner2,{from:owner1});
+  
+        if (tx.logs[0].event == "PetGifted") {
+          eventEmitted = true;
+        }
+        assert.equal(
+          eventEmitted,
+          true,
+          "gifting a pet should emit a PetGifted event",
+        );
+      });
+
+      it("should NOT allow anyone except current owner to gift a pet", async () => {
+        await instance.registerVet(vet1,{from:_vetSociety});
+        await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
+        await catchRevert(instance.giftPet(1,owner3, {from:owner2}));
+      });
+    });
+
+
 });
