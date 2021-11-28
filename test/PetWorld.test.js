@@ -57,7 +57,7 @@ contract("PetWorld", function(accounts){
       it("should allow vets to create a pet", async () => {
         await instance.registerVet(vet1,{from:_vetSociety});
         await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
-        const tx = await instance.getPet.call(1);
+        const tx = await instance.getPet(1);
         assert.equal(
           tx._id,
           1,
@@ -137,7 +137,7 @@ contract("PetWorld", function(accounts){
         await instance.registerVet(vet1,{from:_vetSociety});
         await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
         await instance.deletePet(1,{from:vet1});
-        const tx = await instance.getPet.call(1);
+        const tx = await instance.getPet(1);
         assert.equal(
           tx._id,
           1,
@@ -195,7 +195,7 @@ contract("PetWorld", function(accounts){
         await instance.registerVet(vet2,{from:_vetSociety});
         await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
         await instance.deletePet(1,{from:vet2});
-        const tx = await instance.getPet.call(1);
+        const tx = await instance.getPet(1);
         assert.equal(
           tx._id,
           1,
@@ -278,7 +278,7 @@ contract("PetWorld", function(accounts){
         await instance.registerVet(vet1,{from:_vetSociety});
         await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
         await instance.updatePet(1,true,100,{from:owner1});
-        const tx = await instance.getPet.call(1);
+        const tx = await instance.getPet(1);
         assert.equal(
           tx._id,
           1,
@@ -360,7 +360,7 @@ contract("PetWorld", function(accounts){
         await instance.registerVet(vet1,{from:_vetSociety});
         await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
         await instance.giftPet(1,owner2,{from:owner1});
-        const tx = await instance.getPet.call(1);
+        const tx = await instance.getPet(1);
         assert.equal(
           tx._id,
           1,
@@ -436,5 +436,131 @@ contract("PetWorld", function(accounts){
       });
     });
 
+    describe("Pet Buying - Use Cases", ()=>{
+
+      it("should allow purchase of pets", async () => {
+        await instance.registerVet(vet1,{from:_vetSociety});
+        await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
+        await instance.updatePet(1,true,100,{from:owner1});
+        await instance.buyPet(1,{from:owner2, value:200});
+        const tx = await instance.getPet(1);
+        assert.equal(
+          tx._id,
+          1,
+          "the id of the purchased pet not match the expected value",
+        );
+        assert.equal(
+          tx._type,
+          PetWorld.PetType.Dog,
+          "the type of the purchased pet does not match the expected value",
+        );
+        assert.equal(
+          tx._gender,
+          PetWorld.Gender.Male,
+          "the gender of the purchased pet does not match the expected value",
+        );
+        assert.equal(
+          tx._dob,
+          "01-JAN-2001",
+          "the DoB of the purchased pet does not match the expected value",
+        );
+        assert.equal(
+          tx._isAlive,
+          true,
+          "the isAlive status of the purchased pet does not match the expected value",
+        );
+        assert.equal(
+          tx._forSale,
+          false,
+          "the forSale status of the purchased pet does not match the expected value",
+        );
+        assert.equal(
+          tx._price,
+          100,
+          "the price of the purchased does not match the expected value",
+        );
+        assert.equal(
+          tx._currentOwner,
+          owner2,
+          "the currentOwner of the purchased does not match the expected value",
+        );
+        assert.equal(
+          tx._previousOwner,
+          owner1,
+          "the previousOwner of the purchased pet does not match the expected value",
+        );
+        assert.equal(
+          tx._uri,
+          "http://dummyurl",
+          "the offchainURI of the purchased pet does not match the expected value",
+        );
+      });
+
+      it("should emit a PetSold event when a Pet is Gifted", async () => {
+        let eventEmitted = false;
+        await instance.registerVet(vet1,{from:_vetSociety});
+        await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
+        await instance.updatePet(1,true,100,{from:owner1});
+        const tx = await instance.buyPet(1,{from:owner2, value:200});
+  
+        if (tx.logs[0].event == "PetSold") {
+          eventEmitted = true;
+        }
+        assert.equal(
+          eventEmitted,
+          true,
+          "buying a pet should emit a PetSold event",
+        );
+      });
+
+      it("should NOT allow current owner to buy their own pet", async () => {
+        await instance.registerVet(vet1,{from:_vetSociety});
+        await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
+        await instance.updatePet(1,true,100,{from:owner1});
+        await catchRevert(instance.buyPet(1,{from:owner1, value:200}));
+      });
+
+      it("should NOT allow anyone to buy paying less than asking price", async () => {
+        await instance.registerVet(vet1,{from:_vetSociety});
+        await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
+        await instance.updatePet(1,true,100,{from:owner1});
+        await catchRevert(instance.buyPet(1,{from:owner2, value:90}));
+      });
+
+      it("should update balances of buyer and seller correctly", async () => {
+        await instance.registerVet(vet1,{from:_vetSociety});
+        await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
+        await instance.updatePet(1,true,100,{from:owner1});
+
+        var owner1BalanceBefore = await web3.eth.getBalance(owner1);
+        var owner2BalanceBefore = await web3.eth.getBalance(owner2);
+
+        await instance.buyPet(1,{from:owner2, value:200});
+
+        var owner1BalanceAfter = await web3.eth.getBalance(owner1);
+        var owner2BalanceAfter = await web3.eth.getBalance(owner2);
+
+        console.log(owner1BalanceBefore);
+        console.log(owner2BalanceBefore);
+        console.log(owner1BalanceAfter);
+        console.log(owner2BalanceAfter);
+
+        assert.equal(
+          new BN(owner1BalanceAfter).toString(),
+          new BN(owner1BalanceBefore).add(new BN(100)).toString(),
+          "Owner 1's balance should be increased by the price of the item",
+        );
+
+        assert.isBelow(
+          Number(owner2BalanceAfter),
+          Number(new BN(owner2BalanceBefore).sub(new BN(100))),
+          "Owner 2's balance should be reduced by more than the price of the item (including gas costs)",
+        );
+
+      });
+
+
+
+    });
 
 });

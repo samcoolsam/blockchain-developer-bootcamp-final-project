@@ -22,8 +22,8 @@ contract PetWorld {
     bool isAlive;
     bool forSale;
     uint price;
-    address previousOwner;
-    address currentOwner;
+    address payable previousOwner;
+    address payable currentOwner;
     string offChainInfoURI;
   }
 
@@ -44,11 +44,21 @@ contract PetWorld {
     _;
   }
 
+modifier callerIsNotPetOwner (uint id) { 
+    require (msg.sender != pets[id].currentOwner, "Current owner is NOT allowed to perform this operation"); 
+    _;
+  }
+
 modifier validPrice (uint _price) { 
-    require (_price > 0, "Please set a price > 0"); 
+    require (_price > 0, "Price isn't valid"); 
     _;
   }
   
+  modifier forSale(uint id){
+    require(pets[id].forSale == true, "Pet not for sale");
+    _;
+  }
+
   modifier callerIsVet(address _address){
     bool vetMatched = false;
     for(uint i=1;i<= totalVetCount;i++){
@@ -60,6 +70,19 @@ modifier validPrice (uint _price) {
     require (vetMatched == true, "Only vets are allowed to perform this operation");
     _;
   }
+
+  modifier paidEnough(uint _price) { 
+    require(msg.value >= _price, "Not enough money paid"); 
+    _;
+  }
+
+  modifier refundExcess(uint id) {
+    _;
+     uint _price = pets[id].price;
+     uint amountToRefund = msg.value - _price;
+     pets[id].currentOwner.transfer(amountToRefund);
+  }
+
   constructor() public {
     // Vet Society deploys and initializes this smart contract.
     vetSociety = msg.sender;
@@ -79,7 +102,7 @@ modifier validPrice (uint _price) {
     return vets[id];
   }
 
-  function registerPet(PetType _petType,Gender _gender,string memory _dob, address _currentOwner, string memory _uri) public callerIsVet(msg.sender){
+  function registerPet(PetType _petType,Gender _gender,string memory _dob, address payable _currentOwner, string memory _uri) public callerIsVet(msg.sender){
     totalPetCount++;
 
     pets[totalPetCount] = Pet({
@@ -128,11 +151,22 @@ function getPet(uint id) public view returns (uint _id, PetType _type, Gender _g
     emit PetUpdated(id);    
   }
 
-  function giftPet(uint id, address receiver) public callerIsPetOwner(id){
+  function giftPet(uint id, address payable receiver) public callerIsPetOwner(id){
 
     pets[id].previousOwner = pets[id].currentOwner;
     pets[id].currentOwner = receiver;
     emit PetGifted(id);    
+  }
+
+  function buyPet(uint id) public payable forSale(id) paidEnough(pets[id].price) callerIsNotPetOwner(id) refundExcess(id){
+    pets[id].previousOwner = pets[id].currentOwner;
+    pets[id].currentOwner = msg.sender;
+    pets[id].forSale = false;
+    uint _price = pets[id].price;
+    pets[id].previousOwner.transfer(_price);
+  
+  emit PetSold(id);
+
   }
 
 }
