@@ -398,7 +398,6 @@ pwCreateVetButton.onclick = async () => {
     petWorld.setProvider(window.ethereum);
 
     let vetCreatedStatus = document.getElementById("vetCreatedStatus");
-    //vetCreatedStatus.innerHTML = "Hello";
     try {
         const tx = await petWorld.methods.registerVet(pwVetAddress.value).send({from:ethereum.selectedAddress});
         vetCreatedStatus.innerHTML ="<font color=green>Vet created successfully</font>";
@@ -406,4 +405,149 @@ pwCreateVetButton.onclick = async () => {
     catch (err){
         vetCreatedStatus.innerHTML = "<font color=red> Vet Creation failed, only Vet Society can create vets</font>";
     }
+};
+
+let pwCreatePetButton = document.getElementById("createPet");
+
+/*
+* To create Vets
+* Use must be connected to Metamask as "VetSociety" address.
+*/
+
+pwCreatePetButton.onclick = async () => {
+    console.log("Create Pet clicked");
+    let petType = document.getElementById("pet-type").value;
+    let gender = document.getElementById("pet-gender").value;
+    let birthDate = document.getElementById("birth-date").value;
+    let birthMonth = document.getElementById("birth-month").value;
+    let birthYear = document.getElementById("birth-year").value;
+    let dob= birthDate+"-"+birthMonth+"-"+birthYear;
+    let ownerAddress = document.getElementById("ownerAddress-input").value;
+    let offChainURI = "nothing";
+
+    var web3 = new Web3(window.ethereum);
+
+    const petWorld = new web3.eth.Contract(pwABI, pwAddress);
+
+    petWorld.setProvider(window.ethereum);
+
+    let petCreatedStatus = document.getElementById("petCreatedStatus");
+    try {
+        const tx = await petWorld.methods.registerPet(petType, gender, dob, ownerAddress, offChainURI).send({from:ethereum.selectedAddress});
+        petCreatedStatus.innerHTML ="<font color=green>Pet created successfully</font>";
+    }
+    catch (err){
+        petCreatedStatus.innerHTML = "<font color=red> Pet Creation failed, only Vets can create pets</font>";
+    }
+};
+
+let pwDeletePetButton = document.getElementById("deletePet");
+
+/*
+* To create Vets
+* Use must be connected to Metamask as "VetSociety" address.
+*/
+
+pwDeletePetButton.onclick = async () => {
+    console.log("De-register Pet clicked");
+    
+    let petID = document.getElementById("pet-id").value;
+
+    var web3 = new Web3(window.ethereum);
+
+    const petWorld = new web3.eth.Contract(pwABI, pwAddress);
+
+    petWorld.setProvider(window.ethereum);
+
+    let petDeletedStatus = document.getElementById("petDeletedStatus");
+    try {
+        const tx = await petWorld.methods.deletePet(petID).send({from:ethereum.selectedAddress});
+        petDeletedStatus.innerHTML ="<font color=green>Pet marked a deceased</font>";
+    }
+    catch (err){
+        petDeletedStatus.innerHTML = "<font color=red> Operation failed, only Vets can mark pets as deceased</font>";
+    }
+};
+
+let pwUpdatePetButton = document.getElementById("updatePet");
+pwUpdatePetButton.onclick = async () => {
+  console.log("Update Pet clicked");
+  
+  let petID = document.getElementById("pet-id-forupdate").value;
+  let saleFlag = document.getElementById("sale-flag").value;
+  let price = document.getElementById("price").value;
+
+  var web3 = new Web3(window.ethereum);
+
+  const petWorld = new web3.eth.Contract(pwABI, pwAddress);
+
+  petWorld.setProvider(window.ethereum);
+
+  let petUpdatedStatus = document.getElementById("petUpdatedStatus");
+  try {
+      const tx = await petWorld.methods.updatePet(petID,saleFlag,price).send({from:ethereum.selectedAddress});
+      petUpdatedStatus.innerHTML ="<font color=green>Pet updated successfully</font>";
+  }
+  catch (err){
+      petUpdatedStatus.innerHTML = "<font color=red> Operation failed, only pet owners can update their own pet details</font>";
+  }
+};
+
+
+let pwGiftPetButton = document.getElementById("giftPet");
+pwGiftPetButton.onclick = async () => {
+  console.log("Gift Pet clicked");
+  
+  let petID = document.getElementById("pet-id-forgifting").value;
+  let newOwner = document.getElementById("newOwnerAddress-input").value;
+
+  var web3 = new Web3(window.ethereum);
+
+  const petWorld = new web3.eth.Contract(pwABI, pwAddress);
+
+  petWorld.setProvider(window.ethereum);
+
+  let petGiftedStatus = document.getElementById("petGiftedStatus");
+  try {
+      const tx = await petWorld.methods.giftPet(petID,newOwner).send({from:ethereum.selectedAddress});
+      petGiftedStatus.innerHTML ="<font color=green>Pet gifted successfully</font>";
+  }
+  catch (err){
+      petGiftedStatus.innerHTML = "<font color=red> Operation failed, only pet owners can gift their own pet</font>";
+  }
+};
+
+let pwSearchPetButton = document.getElementById("searchPet");
+pwSearchPetButton.onclick = async () => {
+  console.log("Search Pet clicked");
+  
+  let petID = document.getElementById("pet-id-forsearch").value;
+
+  var web3 = new Web3(window.ethereum);
+
+  const petWorld = new web3.eth.Contract(pwABI, pwAddress);
+
+  petWorld.setProvider(window.ethereum);
+
+  let petDetails = document.getElementById("petDetails");
+  // try {
+  //     const tx = await petWorld.methods.getPet(petID).send({from:ethereum.selectedAddress});
+  //     console.log(tx);
+  //     petDetails.innerHTML ="<font color=green>Pet details retreived successfully</font>";
+  // }
+  // catch (err){
+  //     petDetails.innerHTML = "<font color=red> Operation failed, cannot retreive pet details</font>";
+  // }
+
+  petWorld.methods.getPet(petID).call(function (err, res) {
+    if (err) {
+      console.log("An error occured", err)
+      petDetails.innerHTML ="<font color=red>Operation failed, cannot retreive pet details</font>";
+      return
+    }
+    console.log("The response is: ", res);
+    petDetails.innerHTML ="<font color=green> Pet Id= "+res[0]+"<br> Pet Type= "+res[1]+
+    "<br>Gender= "+res[2]+"<br>Date of birth= "+res[3]+"<br>Is Alive= "+res[4]+"<br>For Sale= "+res[5]+
+    "<br>Price= "+res[6]+ "<br>Previous Owner= "+res[7]+"<br>Current Owner= "+res[8]+"<br> More Info ="+res[9]+"</font>";
+  })
 };

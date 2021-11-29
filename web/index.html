@@ -8,20 +8,83 @@
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
 </head>
 <body>
-    <h1>Welcome to Pet World</h1>
-    <h2>Connection Information</h2>
+    <h1 align=center><font color=blue>Welcome to Pet World</font></h1>
+    <hr>
+    <h2 align=right>Connection Information</h2>
     <div id="mm-detected"></div>
     <div id="mm-chain"></div>
     <button id="mm-connect">Connect to Metamask before buying a pet</button>
     <div id="mm-current-account"></div>
-    
-    <h2>Actions for Vet Society</h2>
-    Make sure you are connected to the app as Vet Society before trying these.
-    </br>
+    <hr>
+
+
+    <h2 align=right>Actions for Vet Society</h2>
+    <div align=right>Make sure you are connected to the app as Vet Society before trying these.</div>
+    <h3>Register new vets</h3>
     <input id="vetAddress-input" size=50 placeholder="Enter VET Address"/>
-    <button id="createVet">Create Vet</button>
+    <button id="createVet">Register Vet</button>
     </br>
     <div id="vetCreatedStatus"></div>
+    <hr>
+
+
+    <h2 align=right>Actions for Vets</h2>
+    <div align=right>Make sure you are connected to the app as Vet before trying these.</div>
+    <h3>Register new pet</h3>
+    Pet Type: <select name="pet-type" id="pet-type">
+        <option value="0">Cat</option>
+        <option value="1">Dog</option>
+    </select>
+    Gender: <select name="pet-gender" id="pet-gender">
+        <option value="0">Male</option>
+        <option value="1">Female</option>
+    </select>
+    Date of birth: <input id="birth-date" size=2 placeholder="DD"/> <input id="birth-month" size=4 placeholder="MMM"/> <input id="birth-year" size=5 placeholder="YYYY"/>
+    Owner Address: <input id="ownerAddress-input" size=50 placeholder="Enter Owner Address"/>
+    <button id="createPet">Register Pet</button>
+    </br>
+    <div id="petCreatedStatus"></div>
+
+    <h3>De-register pet</h3>
+    Pet id: <input id="pet-id" size=4/> <button id="deletePet">De-register Pet</button>
+    <div id="petDeletedStatus"></div>
+    <hr>
+
+    <h2 align=right>Actions for Pet owners</h2>
+    <div align=right>Make sure you are connected to the app as Pet owner before trying these.</div>
+    <h3>Mark your pet for sale or not for sale</h3>
+    Pet id: <input id="pet-id-forupdate" size=4/>
+    <select name="sale-flag" id="sale-flag">
+        <option value="0">Not for sale</option>
+        <option value="1">For sale</option>
+    </select>
+    Price: <input id="price" size=4/>
+    
+    <button id="updatePet">Update Pet</button>
+    </br>
+    <div id="petUpdatedStatus"></div>
+
+    <h3>Gift your pet</h3>
+    Pet id: <input id="pet-id-forgifting" size=4/>
+    New Owner Address: <input id="newOwnerAddress-input" size=50 placeholder="Enter New Owner Address"/>
+    
+    
+    <button id="giftPet">Gift Pet</button>
+    </br>
+    <div id="petGiftedStatus"></div>
+    <hr>
+
+
+    <h2 align=right>Market Place</h2>
+    <div align=right>Browse, Buy and Sell pets.</div>
+    <h3>Search for a pet</h3>
+    Pet id: <input id="pet-id-forsearch" size=4/>
+    <button id="searchPet">Search Pet</button>
+    </br>
+    <div id="petDetails"></div>
+
+    <hr>
+
     <script src="dapp.js"></script>
 </body>
 </html>
