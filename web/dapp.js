@@ -541,13 +541,15 @@ pwSearchPetButton.onclick = async () => {
 
   petWorld.methods.getPet(petID).call(function (err, res) {
     if (err) {
-      console.log("An error occured", err)
       petDetails.innerHTML ="<font color=red>Operation failed, cannot retreive pet details</font>";
       return
     }
-    console.log("The response is: ", res);
-    petDetails.innerHTML ="<font color=green> Pet Id= "+res[0]+"<br> Pet Type= "+res[1]+
-    "<br>Gender= "+res[2]+"<br>Date of birth= "+res[3]+"<br>Is Alive= "+res[4]+"<br>For Sale= "+res[5]+
-    "<br>Price= "+res[6]+ "<br>Previous Owner= "+res[7]+"<br>Current Owner= "+res[8]+"<br> More Info ="+res[9]+"</font>";
+    if(res[0]==0){
+      petDetails.innerHTML ="<font color=red>Pet does not exist</font>";
+    } else {
+      petDetails.innerHTML ="<font color=green> Pet Id= "+res[0]+"<br> Pet Type= "+res[1]+
+      "<br>Gender= "+res[2]+"<br>Date of birth= "+res[3]+"<br>Is Alive= "+res[4]+"<br>For Sale= "+res[5]+
+      "<br>Price= "+res[6]+ "<br>Previous Owner= "+res[7]+"<br>Current Owner= "+res[8]+"<br> More Info ="+res[9]+"</font>";
+    }
   })
 };
