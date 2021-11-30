@@ -424,7 +424,7 @@ pwCreatePetButton.onclick = async () => {
     let dob= birthDate+"-"+birthMonth+"-"+birthYear;
     let ownerAddress = document.getElementById("ownerAddress-input").value;
     let offChainURI = "nothing";
-
+    let picture = document.getElementById("pet-picture").value;
     var web3 = new Web3(window.ethereum);
 
     const petWorld = new web3.eth.Contract(pwABI, pwAddress);
@@ -547,9 +547,52 @@ pwSearchPetButton.onclick = async () => {
     if(res[0]==0){
       petDetails.innerHTML ="<font color=red>Pet does not exist</font>";
     } else {
-      petDetails.innerHTML ="<font color=green> Pet Id= "+res[0]+"<br> Pet Type= "+res[1]+
-      "<br>Gender= "+res[2]+"<br>Date of birth= "+res[3]+"<br>Is Alive= "+res[4]+"<br>For Sale= "+res[5]+
-      "<br>Price= "+res[6]+ "<br>Previous Owner= "+res[7]+"<br>Current Owner= "+res[8]+"<br> More Info ="+res[9]+"</font>";
+      displayPet = convertPet(res);
+      //console.log("****"+blah[0])
+      petDetails.innerHTML ="Pet Id= "+displayPet[0]+"<br> Pet Type= "+displayPet[1]+
+      "<br>Gender= "+displayPet[2]+"<br>Date of birth= "+displayPet[3]+"<br>Is Alive= "+displayPet[4]+"<br>For Sale= "+displayPet[5]+
+      "<br>Price= "+displayPet[6]+ "<br>Previous Owner= "+displayPet[7]+"<br>Current Owner= "+displayPet[8]+"<br> More Info ="+displayPet[9];
     }
   })
 };
+
+function convertPet(res){
+  petArray = [];
+  //petid
+  petArray[0] = res[0];
+  //pet type
+  if(res[1] == 0){
+    petArray[1] = "Cat";
+  } else {
+    petArray[1] = "Dog";
+  }
+//pet gender
+  if(res[2] == 0){
+    petArray[2] = "Male";
+  } else {
+    petArray[2] = "Female";
+  }
+  //dob
+  petArray[3] = res[3];
+  //Alive
+  if(res[4] == 0){
+    petArray[4] = "<font color=red>No</font>";
+  } else {
+    petArray[4] = "<font color=green>Yes</font>";
+  }
+ //for Sale
+ if(res[5] == 0){
+  petArray[5] = "<font color=red>No</font>";
+} else {
+  petArray[5] = "<font color=green>Yes</font>";
+} 
+ //price
+ petArray[6] = res[6];
+//previous owner
+petArray[7] = res[7];
+//current owner
+petArray[8] = res[8];
+//moreInfo
+petArray[9] = res[9];
+  return petArray;
+}
