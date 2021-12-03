@@ -5,88 +5,106 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet World</title>
+    <link rel="stylesheet" href="main.css">
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
     <h1 align=center><font color=blue>Welcome to Pet World</font></h1>
-    <hr>
     <h2 align=right>Connection Information</h2>
-    <div id="mm-detected"></div>
-    <div id="mm-chain"></div>
-    <button id="mm-connect">Connect to Metamask before buying a pet</button>
-    <div id="mm-current-account"></div>
-    <hr>
+    <div align=right id="mm-detected"></div>
+    <div align=right id="mm-chain"></div>
+    <div align=right><button id="mm-connect">Connect to Metamask</button></div>
+    <div align=right id="mm-current-account"></div>
 
+    <!-- Tab links -->
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'VSTab')" id="defaultOpen">Vet Society</button>
+        <button class="tablinks" onclick="openTab(event, 'VTab')">Vets</button>
+        <button class="tablinks" onclick="openTab(event, 'OTab')">Pet Owners</button>
+        <button class="tablinks" onclick="openTab(event, 'MTab')">Market Place</button>
+      </div>
 
-    <h2 align=right>Actions for Vet Society</h2>
-    <div align=right>Make sure you are connected to the app as Vet Society before trying these.</div>
-    <h3>Register new vets</h3>
-    <input id="vetAddress-input" size=50 placeholder="Enter VET Address"/>
-    <button id="createVet">Register Vet</button>
-    </br>
-    <div id="vetCreatedStatus"></div>
-    <hr>
+    <!-- Tab content -->
+    <div id="VSTab" class="tabcontent">
+        <h2 align=center>Actions for Vet Society</h2>
+        <div align=center>Make sure you are connected to the app as Vet Society before trying these.</div>
+        <h3>Register new vets</h3>
+        <input id="vetAddress-input" size=50 placeholder="Enter VET Address"/>
+        <button id="createVet">Register Vet</button>
+        </br>
+        <div id="vetCreatedStatus"></div>
+    </div> 
 
+    <!-- Tab content -->
+    <div id="VTab" class="tabcontent">
+        <h2 align=center>Actions for Vets</h2>
+        <div align=center>Make sure you are connected to the app as Vet before trying these.</div>
+        <h3>Register new pet</h3>
+        Pet Type: <select name="pet-type" id="pet-type">
+            <option value="0">Cat</option>
+            <option value="1">Dog</option>
+        </select>
+        Gender: <select name="pet-gender" id="pet-gender">
+            <option value="0">Male</option>
+            <option value="1">Female</option>
+        </select>
+        Date of birth: <input id="birth-date" size=2 placeholder="DD"/> <input id="birth-month" size=4 placeholder="MMM"/> <input id="birth-year" size=5 placeholder="YYYY"/>
+        Owner Address: <input id="ownerAddress-input" size=50 placeholder="Enter Owner Address"/>
+        <br> <br>
+        Pet picture: <input type="file" id="pet-picture"><br><br>
+        <button id="createPet">Register Pet</button>
+        </br>
+        <div id="petCreatedStatus"></div>
+        <hr>
+        <h3>De-register pet</h3>
+        Pet id: <input id="pet-id" size=4/> <button id="deletePet">De-register Pet</button>
+        <div id="petDeletedStatus"></div>
+    </div> 
 
-    <h2 align=right>Actions for Vets</h2>
-    <div align=right>Make sure you are connected to the app as Vet before trying these.</div>
-    <h3>Register new pet</h3>
-    Pet Type: <select name="pet-type" id="pet-type">
-        <option value="0">Cat</option>
-        <option value="1">Dog</option>
-    </select>
-    Gender: <select name="pet-gender" id="pet-gender">
-        <option value="0">Male</option>
-        <option value="1">Female</option>
-    </select>
-    Date of birth: <input id="birth-date" size=2 placeholder="DD"/> <input id="birth-month" size=4 placeholder="MMM"/> <input id="birth-year" size=5 placeholder="YYYY"/>
-    Owner Address: <input id="ownerAddress-input" size=50 placeholder="Enter Owner Address"/>
-    <br> <br>
-    Pet picture: <input type="file" id="pet-picture"><br><br>
-    <button id="createPet">Register Pet</button>
-    </br>
-    <div id="petCreatedStatus"></div>
-
-    <h3>De-register pet</h3>
-    Pet id: <input id="pet-id" size=4/> <button id="deletePet">De-register Pet</button>
-    <div id="petDeletedStatus"></div>
-    <hr>
-
-    <h2 align=right>Actions for Pet owners</h2>
-    <div align=right>Make sure you are connected to the app as Pet owner before trying these.</div>
-    <h3>Mark your pet for sale or not for sale</h3>
-    Pet id: <input id="pet-id-forupdate" size=4/>
-    <select name="sale-flag" id="sale-flag">
-        <option value="0">Not for sale</option>
-        <option value="1">For sale</option>
-    </select>
-    Price: <input id="price" size=4/>
+    <!-- Tab content -->
+    <div id="OTab" class="tabcontent">
+        <h2 align=center>Actions for Pet owners</h2>
+        <div align=center>Make sure you are connected to the app as Pet owner before trying these.</div>
+        <h3>Mark your pet for sale or not for sale</h3>
+        Pet id: <input id="pet-id-forupdate" size=4/>
+        <select name="sale-flag" id="sale-flag">
+            <option value="0">Not for sale</option>
+            <option value="1">For sale</option>
+        </select>
+        Price: <input id="price" size=4/>
     
-    <button id="updatePet">Update Pet</button>
-    </br>
-    <div id="petUpdatedStatus"></div>
-
-    <h3>Gift your pet</h3>
-    Pet id: <input id="pet-id-forgifting" size=4/>
-    New Owner Address: <input id="newOwnerAddress-input" size=50 placeholder="Enter New Owner Address"/>
+        <button id="updatePet">Update Pet</button>
+        </br>
+        <div id="petUpdatedStatus"></div>
+        <hr>
+        <h3>Gift your pet</h3>
+        Pet id: <input id="pet-id-forgifting" size=4/>
+        New Owner Address: <input id="newOwnerAddress-input" size=50 placeholder="Enter New Owner Address"/>
     
     
-    <button id="giftPet">Gift Pet</button>
-    </br>
-    <div id="petGiftedStatus"></div>
-    <hr>
+        <button id="giftPet">Gift Pet</button>
+        </br>
+        <div id="petGiftedStatus"></div>
+    </div> 
+
+    <!-- Tab content -->
+    <div id="MTab" class="tabcontent">
+        <h2 align=center>Market Place</h2>
+        <div align=center>Browse, Buy and Sell pets.</div>
+        <h3>Search for a pet</h3>
+        Pet id: <input id="pet-id-forsearch" size=4/>
+        <button id="searchPet">Search Pet</button><br>
+        <p>       </p><button id="leftSearch"><<</button> <button id="rightSearch">>></button>
+        </br>
+        <div id="petDetails"></div>
+    </div> 
+    
+
+    
 
 
-    <h2 align=right>Market Place</h2>
-    <div align=right>Browse, Buy and Sell pets.</div>
-    <h3>Search for a pet</h3>
-    Pet id: <input id="pet-id-forsearch" size=4/>
-    <button id="searchPet">Search Pet</button>
-    </br>
-    <div id="petDetails"></div>
-
-    <hr>
+    
     <script src="dapp.js"></script> 
 </body>
 </html>

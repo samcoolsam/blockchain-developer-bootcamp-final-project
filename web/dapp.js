@@ -1,3 +1,5 @@
+document.getElementById("defaultOpen").click();
+
 const pwAddress = '0xEB6C837FB058A7d021E3563acA7327f75756967c';
 
 const pwABI = [
@@ -344,14 +346,33 @@ const pwABI = [
 //metamask - account 12 Ganache index 9
 //NOTUSE2 = 0x4D57bD11367987F681f8D5bBc4130538eC06A698;
 
+function openTab(evt, tabName) {
+  // Declare all variables
+  var i, tabcontent, tablinks;
+
+  // Get all elements with class="tabcontent" and hide them
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  // Get all elements with class="tablinks" and remove the class "active"
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+
+  // Show the current tab, and add an "active" class to the button that opened the tab
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
 window.addEventListener('load',()=>{
     let mmDetected = document.getElementById("mm-detected");
     if(typeof window.etherium != undefined){
-        console.log("Metamask available");
-        mmDetected.innerHTML = "<font color='green'>Metamask Detected successfully</font>";
+        mmDetected.innerHTML = "<font color='green'>Metamask detected</font>";
     } else { 
-        console.log("Metamask isn't avaialble");
-        mmDetected.innerHTML = "<font color='red'>Metamask isn't Detected</font>";
+        mmDetected.innerHTML = "<font color='red'>Metamask not detected</font>";
     }
 });
 
@@ -363,17 +384,16 @@ let mmEnable = document.getElementById("mm-connect");
 */
 
 mmEnable.onclick = async () => {
-    console.log("Connect to Metamask clicked");
     await ethereum.request({method:'eth_requestAccounts'});
 
     let mmCurrentAccount = document.getElementById("mm-current-account");
-    mmCurrentAccount.innerHTML = "Current Account "+ ethereum.selectedAddress;
+    mmCurrentAccount.innerHTML = "Current Account: &nbsp;&nbsp;"+ convertAddress(ethereum.selectedAddress);
 
     let mmChain = document.getElementById("mm-chain");
     if (ethereum.chainId == 3){
-        mmChain.innerHTML = "<font color='green'>You are connected to Ropsten</font>";
+        mmChain.innerHTML = "<font color='green'>Connected to: Ropsten</font>";
     } else {
-        mmChain.innerHTML = "<font color='red'>Please open Metamask and connect to Ropsten</font>";
+        mmChain.innerHTML = "<font color='red'>Please connect to Ropsten</font>";
     }
 };
 
@@ -388,7 +408,6 @@ let pwCreateVetButton = document.getElementById("createVet");
 */
 
 pwCreateVetButton.onclick = async () => {
-    console.log("Create Vet clicked");
     let pwVetAddress = document.getElementById("vetAddress-input");
 
     var web3 = new Web3(window.ethereum);
@@ -415,7 +434,6 @@ let pwCreatePetButton = document.getElementById("createPet");
 */
 
 pwCreatePetButton.onclick = async () => {
-    console.log("Create Pet clicked");
     let petType = document.getElementById("pet-type").value;
     let gender = document.getElementById("pet-gender").value;
     let birthDate = document.getElementById("birth-date").value;
@@ -458,13 +476,11 @@ pwCreatePetButton.onclick = async () => {
       data: formData,
       success: async function(result){
       offChainURI = result.IpfsHash;
-      console.log("Creating pet with pic");
       ///////
       const petWorld = new web3.eth.Contract(pwABI, pwAddress);
       petWorld.setProvider(window.ethereum);
       let petCreatedStatus = document.getElementById("petCreatedStatus");
       try {
-        console.log("OUTSIDE PINATA ***"+ offChainURI);
         const tx = await petWorld.methods.registerPet(petType, gender, dob, ownerAddress, offChainURI).send({from:ethereum.selectedAddress});
         petCreatedStatus.innerHTML ="<font color=green>Pet created successfully</font>";
       }
@@ -474,34 +490,19 @@ pwCreatePetButton.onclick = async () => {
       ///////
       },
       error: async function(error){
-        console.log("Unable to upload pets pic to IPFS");
         //////
         const petWorld = new web3.eth.Contract(pwABI, pwAddress);
         petWorld.setProvider(window.ethereum);
         let petCreatedStatus = document.getElementById("petCreatedStatus");
         try {
           const tx = await petWorld.methods.registerPet(petType, gender, dob, ownerAddress, offChainURI).send({from:ethereum.selectedAddress});
-          petCreatedStatus.innerHTML ="<font color=green>Pet created successfully</font>";
+          petCreatedStatus.innerHTML ="<font color=green>Pet created successfully</font>,<font color=red> but without picture</font>";
          }
         catch (err){
           petCreatedStatus.innerHTML = "<font color=red> Pet Creation failed, only Vets can create pets</font>";
         }
         //////
       }});
-
-    // const petWorld = new web3.eth.Contract(pwABI, pwAddress);
-
-    // petWorld.setProvider(window.ethereum);
-
-    // let petCreatedStatus = document.getElementById("petCreatedStatus");
-    // try {
-    //   console.log("OUTSIDE PINATA ***"+ offChainURI);
-    //     const tx = await petWorld.methods.registerPet(petType, gender, dob, ownerAddress, offChainURI).send({from:ethereum.selectedAddress});
-    //     petCreatedStatus.innerHTML ="<font color=green>Pet created successfully</font>";
-    // }
-    // catch (err){
-    //     petCreatedStatus.innerHTML = "<font color=red> Pet Creation failed, only Vets can create pets</font>";
-    // }
 };
 
 let pwDeletePetButton = document.getElementById("deletePet");
@@ -512,7 +513,6 @@ let pwDeletePetButton = document.getElementById("deletePet");
 */
 
 pwDeletePetButton.onclick = async () => {
-    console.log("De-register Pet clicked");
     
     let petID = document.getElementById("pet-id").value;
 
@@ -533,8 +533,7 @@ pwDeletePetButton.onclick = async () => {
 };
 
 let pwUpdatePetButton = document.getElementById("updatePet");
-pwUpdatePetButton.onclick = async () => {
-  console.log("Update Pet clicked");
+  pwUpdatePetButton.onclick = async () => {
   
   let petID = document.getElementById("pet-id-forupdate").value;
   let saleFlag = document.getElementById("sale-flag").value;
@@ -558,8 +557,7 @@ pwUpdatePetButton.onclick = async () => {
 
 
 let pwGiftPetButton = document.getElementById("giftPet");
-pwGiftPetButton.onclick = async () => {
-  console.log("Gift Pet clicked");
+  pwGiftPetButton.onclick = async () => {
   
   let petID = document.getElementById("pet-id-forgifting").value;
   let newOwner = document.getElementById("newOwnerAddress-input").value;
@@ -581,11 +579,14 @@ pwGiftPetButton.onclick = async () => {
 };
 
 let pwSearchPetButton = document.getElementById("searchPet");
-pwSearchPetButton.onclick = async () => {
-  console.log("Search Pet clicked");
+  pwSearchPetButton.onclick = async () => {
   
   let petID = document.getElementById("pet-id-forsearch").value;
 
+  if(petID==""){
+    petID=1;
+    document.getElementById("pet-id-forsearch").value=1;
+  }
   var web3 = new Web3(window.ethereum);
 
   const petWorld = new web3.eth.Contract(pwABI, pwAddress);
@@ -593,15 +594,6 @@ pwSearchPetButton.onclick = async () => {
   petWorld.setProvider(window.ethereum);
 
   let petDetails = document.getElementById("petDetails");
-  // try {
-  //     const tx = await petWorld.methods.getPet(petID).send({from:ethereum.selectedAddress});
-  //     console.log(tx);
-  //     petDetails.innerHTML ="<font color=green>Pet details retreived successfully</font>";
-  // }
-  // catch (err){
-  //     petDetails.innerHTML = "<font color=red> Operation failed, cannot retreive pet details</font>";
-  // }
-
   petWorld.methods.getPet(petID).call(function (err, res) {
     if (err) {
       petDetails.innerHTML ="<font color=red>Operation failed, cannot retreive pet details</font>";
@@ -611,12 +603,40 @@ pwSearchPetButton.onclick = async () => {
       petDetails.innerHTML ="<font color=red>Pet does not exist</font>";
     } else {
       displayPet = convertPet(res);
-      petDetails.innerHTML ="Pet Id= "+displayPet[0]+"<br> Pet Type= "+displayPet[1]+
+      petDetails.innerHTML ="<table><tr><td>"+
+      "Pet Id= "+displayPet[0]+"<br> Pet Type= "+displayPet[1]+
       "<br>Gender= "+displayPet[2]+"<br>Date of birth= "+displayPet[3]+"<br>Is Alive= "+displayPet[4]+"<br>For Sale= "+displayPet[5]+
-      "<br>Price= "+displayPet[6]+ "<br>Previous Owner= "+displayPet[7]+"<br>Current Owner= "+displayPet[8]+"<br> More Info ="+displayPet[9];
+      "<br>Price= "+displayPet[6]+ "<br>Previous Owner= "+displayPet[7]+"<br>Current Owner= "+displayPet[8]+"</td>"+
+      "<td>"+displayPet[9]+"</td></tr></table>";
     }
   })
 };
+
+
+let leftSearchButton = document.getElementById("leftSearch");
+leftSearchButton.onclick = () => {
+  let petID = document.getElementById("pet-id-forsearch").value;
+
+  if(petID==""){
+    document.getElementById("pet-id-forsearch").value = 1;
+  } else if (petID>=2){
+    document.getElementById("pet-id-forsearch").value = petID-1;
+  } 
+  document.getElementById("searchPet").click();
+};
+
+let rightSearchButton = document.getElementById("rightSearch");
+rightSearchButton.onclick = () => {
+  let petID = document.getElementById("pet-id-forsearch").value;
+
+  if(petID==""){
+    document.getElementById("pet-id-forsearch").value = 1;
+  } else {
+    document.getElementById("pet-id-forsearch").value = parseInt(petID)+1;
+  } 
+  document.getElementById("searchPet").click();
+};
+
 
 function convertPet(res){
   petArray = [];
@@ -651,10 +671,28 @@ function convertPet(res){
  //price
  petArray[6] = res[6];
 //previous owner
-petArray[7] = res[7];
+petArray[7] = convertAddress(res[7]);
 //current owner
-petArray[8] = res[8];
+petArray[8] = convertAddress(res[8]);
 //moreInfo
+if(res[9] == "nothing"){
+  petArray[9] = "<img width=300 height=200 src='../resources/no-image.jpeg'/>";
+}
+else {
 petArray[9] = "<img src='https://gateway.pinata.cloud/ipfs/"+res[9]+"'/>";
+}
   return petArray;
+}
+
+function convertAddress(addr){
+  if(addr=="0x0000000000000000000000000000000000000000"){ 
+    return "None";
+  } else {
+    if(addr.length != 42){
+      return "Invalid address";
+    } else {
+      let formattedAddr = addr.substring(0,7)+"..."+addr.substring(37);
+      return formattedAddr;
+    }
+  }
 }
