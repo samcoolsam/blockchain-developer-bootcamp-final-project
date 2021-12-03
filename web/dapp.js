@@ -424,21 +424,84 @@ pwCreatePetButton.onclick = async () => {
     let dob= birthDate+"-"+birthMonth+"-"+birthYear;
     let ownerAddress = document.getElementById("ownerAddress-input").value;
     let offChainURI = "nothing";
-    let picture = document.getElementById("pet-picture").value;
+    let picture = document.getElementById("pet-picture").files;
     var web3 = new Web3(window.ethereum);
 
-    const petWorld = new web3.eth.Contract(pwABI, pwAddress);
 
-    petWorld.setProvider(window.ethereum);
+    // const URL="https://api.pinata.cloud/data/testAuthentication";
+    // $.ajax({url:URL,
+    //   type: "GET",
+    //   headers:{
+    //     pinata_api_key: "0254cc66fef779207cda",
+    //     pinata_secret_api_key: "06f86af5c6944a7c1a7b9d878a0c789b4b25061f6c7535d0f0427316871d8b0e"
+    //   },
+    //   success: function(result){
+    //   console.log("hello how r u");
+    //   console.log(result);
+    //   },
+    //   error: function(error){
+    //     console.log("Unable to get complete action with pinata");
+    //   }});
+      
+    let formData = new FormData();
+    formData.append('file',picture[0]);
 
-    let petCreatedStatus = document.getElementById("petCreatedStatus");
-    try {
+    const URL="https://api.pinata.cloud/pinning/pinFileToIPFS";
+    $.ajax({url:URL,
+      type: "POST",
+      processData: false,
+      contentType: false,
+      headers:{
+        pinata_api_key: "0254cc66fef779207cda",
+        pinata_secret_api_key: "06f86af5c6944a7c1a7b9d878a0c789b4b25061f6c7535d0f0427316871d8b0e",
+      },
+      data: formData,
+      success: async function(result){
+      offChainURI = result.IpfsHash;
+      console.log("Creating pet with pic");
+      ///////
+      const petWorld = new web3.eth.Contract(pwABI, pwAddress);
+      petWorld.setProvider(window.ethereum);
+      let petCreatedStatus = document.getElementById("petCreatedStatus");
+      try {
+        console.log("OUTSIDE PINATA ***"+ offChainURI);
         const tx = await petWorld.methods.registerPet(petType, gender, dob, ownerAddress, offChainURI).send({from:ethereum.selectedAddress});
         petCreatedStatus.innerHTML ="<font color=green>Pet created successfully</font>";
-    }
-    catch (err){
+      }
+      catch (err){
         petCreatedStatus.innerHTML = "<font color=red> Pet Creation failed, only Vets can create pets</font>";
-    }
+      }
+      ///////
+      },
+      error: async function(error){
+        console.log("Unable to upload pets pic to IPFS");
+        //////
+        const petWorld = new web3.eth.Contract(pwABI, pwAddress);
+        petWorld.setProvider(window.ethereum);
+        let petCreatedStatus = document.getElementById("petCreatedStatus");
+        try {
+          const tx = await petWorld.methods.registerPet(petType, gender, dob, ownerAddress, offChainURI).send({from:ethereum.selectedAddress});
+          petCreatedStatus.innerHTML ="<font color=green>Pet created successfully</font>";
+         }
+        catch (err){
+          petCreatedStatus.innerHTML = "<font color=red> Pet Creation failed, only Vets can create pets</font>";
+        }
+        //////
+      }});
+
+    // const petWorld = new web3.eth.Contract(pwABI, pwAddress);
+
+    // petWorld.setProvider(window.ethereum);
+
+    // let petCreatedStatus = document.getElementById("petCreatedStatus");
+    // try {
+    //   console.log("OUTSIDE PINATA ***"+ offChainURI);
+    //     const tx = await petWorld.methods.registerPet(petType, gender, dob, ownerAddress, offChainURI).send({from:ethereum.selectedAddress});
+    //     petCreatedStatus.innerHTML ="<font color=green>Pet created successfully</font>";
+    // }
+    // catch (err){
+    //     petCreatedStatus.innerHTML = "<font color=red> Pet Creation failed, only Vets can create pets</font>";
+    // }
 };
 
 let pwDeletePetButton = document.getElementById("deletePet");
@@ -548,7 +611,6 @@ pwSearchPetButton.onclick = async () => {
       petDetails.innerHTML ="<font color=red>Pet does not exist</font>";
     } else {
       displayPet = convertPet(res);
-      //console.log("****"+blah[0])
       petDetails.innerHTML ="Pet Id= "+displayPet[0]+"<br> Pet Type= "+displayPet[1]+
       "<br>Gender= "+displayPet[2]+"<br>Date of birth= "+displayPet[3]+"<br>Is Alive= "+displayPet[4]+"<br>For Sale= "+displayPet[5]+
       "<br>Price= "+displayPet[6]+ "<br>Previous Owner= "+displayPet[7]+"<br>Current Owner= "+displayPet[8]+"<br> More Info ="+displayPet[9];
@@ -593,6 +655,6 @@ petArray[7] = res[7];
 //current owner
 petArray[8] = res[8];
 //moreInfo
-petArray[9] = res[9];
+petArray[9] = "<img src='https://gateway.pinata.cloud/ipfs/"+res[9]+"'/>";
   return petArray;
 }

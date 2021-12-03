@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet World</title>
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
     <h1 align=center><font color=blue>Welcome to Pet World</font></h1>
@@ -42,7 +43,7 @@
     Date of birth: <input id="birth-date" size=2 placeholder="DD"/> <input id="birth-month" size=4 placeholder="MMM"/> <input id="birth-year" size=5 placeholder="YYYY"/>
     Owner Address: <input id="ownerAddress-input" size=50 placeholder="Enter Owner Address"/>
     <br> <br>
-    Pet picture: <input type=file id="pet-picture"><br><br>
+    Pet picture: <input type="file" id="pet-picture"><br><br>
     <button id="createPet">Register Pet</button>
     </br>
     <div id="petCreatedStatus"></div>
@@ -86,7 +87,6 @@
     <div id="petDetails"></div>
 
     <hr>
-
     <script src="dapp.js"></script> 
 </body>
 </html>
