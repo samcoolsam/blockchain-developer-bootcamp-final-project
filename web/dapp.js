@@ -428,9 +428,11 @@ pwCreateVetButton.onclick = async () => {
     try {
         const tx = await petWorld.methods.registerVet(pwVetAddress.value).send({from:ethereum.selectedAddress});
         vetCreatedStatus.innerHTML ="<font color=green>Vet created successfully</font>";
+        setTimeout(() => {  vetCreatedStatus.innerHTML = ""; }, 5000);
     }
     catch (err){
         vetCreatedStatus.innerHTML = "<font color=red> Vet Creation failed, only Vet Society can create vets</font>";
+        setTimeout(() => {  vetCreatedStatus.innerHTML = ""; }, 5000);
     }
 };
 
@@ -491,9 +493,11 @@ pwCreatePetButton.onclick = async () => {
       try {
         const tx = await petWorld.methods.registerPet(petType, gender, dob, ownerAddress, offChainURI).send({from:ethereum.selectedAddress});
         petCreatedStatus.innerHTML ="<font color=green>Pet created successfully</font>";
+        setTimeout(() => {  petCreatedStatus.innerHTML = ""; }, 5000);
       }
       catch (err){
         petCreatedStatus.innerHTML = "<font color=red> Pet Creation failed, only Vets can create pets</font>";
+        setTimeout(() => {  petCreatedStatus.innerHTML = ""; }, 5000);
       }
       ///////
       },
@@ -505,9 +509,11 @@ pwCreatePetButton.onclick = async () => {
         try {
           const tx = await petWorld.methods.registerPet(petType, gender, dob, ownerAddress, offChainURI).send({from:ethereum.selectedAddress});
           petCreatedStatus.innerHTML ="<font color=green>Pet created successfully</font>,<font color=red> but without picture</font>";
+          setTimeout(() => {  petCreatedStatus.innerHTML = ""; }, 5000);
          }
         catch (err){
           petCreatedStatus.innerHTML = "<font color=red> Pet Creation failed, only Vets can create pets</font>";
+          setTimeout(() => {  petCreatedStatus.innerHTML = ""; }, 5000);
         }
         //////
       }});
@@ -534,9 +540,11 @@ pwDeletePetButton.onclick = async () => {
     try {
         const tx = await petWorld.methods.deletePet(petID).send({from:ethereum.selectedAddress});
         petDeletedStatus.innerHTML ="<font color=green>Pet marked a deceased</font>";
+        setTimeout(() => {  petDeletedStatus.innerHTML = ""; }, 5000);
     }
     catch (err){
         petDeletedStatus.innerHTML = "<font color=red> Operation failed, only Vets can mark pets as deceased</font>";
+        setTimeout(() => {  petDeletedStatus.innerHTML = ""; }, 5000);
     }
 };
 
@@ -557,9 +565,11 @@ let pwUpdatePetButton = document.getElementById("updatePet");
   try {
       const tx = await petWorld.methods.updatePet(petID,saleFlag,price).send({from:ethereum.selectedAddress});
       petUpdatedStatus.innerHTML ="<font color=green>Pet updated successfully</font>";
+      setTimeout(() => {  petUpdatedStatus.innerHTML = ""; }, 5000);
   }
   catch (err){
       petUpdatedStatus.innerHTML = "<font color=red> Operation failed, only pet owners can update their own pet details</font>";
+      setTimeout(() => {  petUpdatedStatus.innerHTML = ""; }, 5000);
   }
 };
 
@@ -580,9 +590,11 @@ let pwGiftPetButton = document.getElementById("giftPet");
   try {
       const tx = await petWorld.methods.giftPet(petID,newOwner).send({from:ethereum.selectedAddress});
       petGiftedStatus.innerHTML ="<font color=green>Pet gifted successfully</font>";
+      setTimeout(() => {  petGiftedStatus.innerHTML = ""; }, 5000);
   }
   catch (err){
       petGiftedStatus.innerHTML = "<font color=red> Operation failed, only pet owners can gift their own pet</font>";
+      setTimeout(() => {  petGiftedStatus.innerHTML = ""; }, 5000);
   }
 };
 
@@ -605,10 +617,12 @@ let pwSearchPetButton = document.getElementById("searchPet");
   petWorld.methods.getPet(petID).call(function (err, res) {
     if (err) {
       petDetails.innerHTML ="<font color=red>Operation failed, cannot retreive pet details</font>";
+      setTimeout(() => {  petDetails.innerHTML = ""; }, 5000);
       return
     }
     if(res[0]==0){
       petDetails.innerHTML ="<font color=red>Pet does not exist</font>";
+      setTimeout(() => {  petDetails.innerHTML = ""; }, 5000);
     } else {
       displayPet = convertPet(res);
       petDetails.innerHTML ="<table><tr><td>"+
@@ -733,8 +747,10 @@ let buyPetButton = document.getElementById("buy-pet");
   try {
       const tx = await petWorld.methods.buyPet(petID).send({from:ethereum.selectedAddress, value:price});
       petSold.innerHTML ="<font color=green>You have bought this pet!</font>";
+      setTimeout(() => {  petSold.innerHTML = ""; }, 5000);
   }
   catch (err){
       petSold.innerHTML = "<font color=red> Operation failed, are you already the owner or do you have sufficient funds?</font>";
+      setTimeout(() => {  petSold.innerHTML = ""; }, 5000);
   }
 };
