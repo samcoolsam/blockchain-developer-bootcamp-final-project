@@ -1,5 +1,6 @@
 document.getElementById("defaultOpen").click();
 
+let selectedPetBuyingPrice = 0;
 const pwAddress = '0xEB6C837FB058A7d021E3563acA7327f75756967c';
 
 const pwABI = [
@@ -388,7 +389,14 @@ mmEnable.onclick = async () => {
 
     let mmCurrentAccount = document.getElementById("mm-current-account");
     mmCurrentAccount.innerHTML = "Current Account: &nbsp;&nbsp;"+ convertAddress(ethereum.selectedAddress);
-
+    var web3 = new Web3(window.ethereum);
+    web3.eth.getBalance(ethereum.selectedAddress, (err, wei) => {
+      balance = web3.utils.fromWei(wei, 'ether');
+      decimal= balance.indexOf(".");
+      bal = balance.substring(0, decimal+5);
+      let mmCurrentBalance = document.getElementById("mm-current-balance");
+      mmCurrentBalance.innerHTML = "Current Balance: &nbsp;&nbsp;"+ bal +" ETH&nbsp;&nbsp;&nbsp;&nbsp;";
+    })
     let mmChain = document.getElementById("mm-chain");
     if (ethereum.chainId == 3){
         mmChain.innerHTML = "<font color='green'>Connected to: Ropsten</font>";
@@ -639,6 +647,8 @@ rightSearchButton.onclick = () => {
 
 
 function convertPet(res){
+  let saleButton = document.getElementById("buy-pet");
+  saleButtonDisabledFlag = false;
   petArray = [];
   //petid
   petArray[0] = res[0];
@@ -659,17 +669,24 @@ function convertPet(res){
   //Alive
   if(res[4] == 0){
     petArray[4] = "<font color=red>No</font>";
+    saleButton.disabled = true;
+    saleButtonDisabledFlag = true;
   } else {
     petArray[4] = "<font color=green>Yes</font>";
+    saleButton.disabled = false;
   }
  //for Sale
  if(res[5] == 0){
   petArray[5] = "<font color=red>No</font>";
+  saleButton.disabled = true;
 } else {
   petArray[5] = "<font color=green>Yes</font>";
+  if(saleButtonDisabledFlag==false){
+  saleButton.disabled = false;}
 } 
  //price
  petArray[6] = res[6];
+ selectedPetBuyingPrice = res[6];
 //previous owner
 petArray[7] = convertAddress(res[7]);
 //current owner
@@ -696,3 +713,28 @@ function convertAddress(addr){
     }
   }
 }
+
+let buyPetButton = document.getElementById("buy-pet");
+  buyPetButton.onclick = async () => {
+  
+  let petID = document.getElementById("pet-id-forsearch").value;
+
+  var web3 = new Web3(window.ethereum);
+
+  const petWorld = new web3.eth.Contract(pwABI, pwAddress);
+
+  petWorld.setProvider(window.ethereum);
+
+  let petSold = document.getElementById("buy-message");
+
+    console.log("Price "+selectedPetBuyingPrice);
+
+    price = web3.utils.toHex(web3.utils.toWei(selectedPetBuyingPrice, 'ether'));
+  try {
+      const tx = await petWorld.methods.buyPet(petID).send({from:ethereum.selectedAddress, value:price});
+      petSold.innerHTML ="<font color=green>You have bought this pet!</font>";
+  }
+  catch (err){
+      petSold.innerHTML = "<font color=red> Operation failed, are you already the owner or do you have sufficient funds?</font>";
+  }
+};
