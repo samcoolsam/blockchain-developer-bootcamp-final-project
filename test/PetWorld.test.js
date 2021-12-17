@@ -277,7 +277,7 @@ contract("PetWorld", function(accounts){
       it("should allow owners to mark the pets for sale and set a valid price", async () => {
         await instance.registerVet(vet1,{from:_vetSociety});
         await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
-        await instance.updatePet(1,true,100,{from:owner1});
+        await instance.updatePet(1,true,10,{from:owner1});
         const tx = await instance.getPet(1);
         assert.equal(
           tx._id,
@@ -311,7 +311,7 @@ contract("PetWorld", function(accounts){
         );
         assert.equal(
           tx._price,
-          100,
+          10,
           "the price of the updated does not match the expected value",
         );
         assert.equal(
@@ -335,7 +335,7 @@ contract("PetWorld", function(accounts){
         let eventEmitted = false;
         await instance.registerVet(vet1,{from:_vetSociety});
         await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
-        const tx = await instance.updatePet(1,true,100,{from:owner1});
+        const tx = await instance.updatePet(1,true,10,{from:owner1});
   
         if (tx.logs[0].event == "PetUpdated") {
           eventEmitted = true;
@@ -350,7 +350,7 @@ contract("PetWorld", function(accounts){
       it("should NOT allow anyone except current owner to update a pet", async () => {
         await instance.registerVet(vet1,{from:_vetSociety});
         await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
-        await catchRevert(instance.updatePet(1,true,100, {from:owner2}));
+        await catchRevert(instance.updatePet(1,true,10, {from:owner2}));
       });
     });
 
@@ -441,8 +441,8 @@ contract("PetWorld", function(accounts){
       it("should allow purchase of pets", async () => {
         await instance.registerVet(vet1,{from:_vetSociety});
         await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
-        await instance.updatePet(1,true,100,{from:owner1});
-        await instance.buyPet(1,{from:owner2, value:200});
+        await instance.updatePet(1,true,10,{from:owner1});
+        await instance.buyPet(1,{from:owner2, value:20});
         const tx = await instance.getPet(1);
         assert.equal(
           tx._id,
@@ -476,7 +476,7 @@ contract("PetWorld", function(accounts){
         );
         assert.equal(
           tx._price,
-          100,
+          10,
           "the price of the purchased does not match the expected value",
         );
         assert.equal(
@@ -496,12 +496,12 @@ contract("PetWorld", function(accounts){
         );
       });
 
-      it("should emit a PetSold event when a Pet is Gifted", async () => {
+      it("should emit a PetSold event when a Pet is Sold", async () => {
         let eventEmitted = false;
         await instance.registerVet(vet1,{from:_vetSociety});
         await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
-        await instance.updatePet(1,true,100,{from:owner1});
-        const tx = await instance.buyPet(1,{from:owner2, value:200});
+        await instance.updatePet(1,true,10,{from:owner1});
+        const tx = await instance.buyPet(1,{from:owner2, value:20});
   
         if (tx.logs[0].event == "PetSold") {
           eventEmitted = true;
@@ -516,39 +516,44 @@ contract("PetWorld", function(accounts){
       it("should NOT allow current owner to buy their own pet", async () => {
         await instance.registerVet(vet1,{from:_vetSociety});
         await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
-        await instance.updatePet(1,true,100,{from:owner1});
-        await catchRevert(instance.buyPet(1,{from:owner1, value:200}));
+        await instance.updatePet(1,true,10,{from:owner1});
+        await catchRevert(instance.buyPet(1,{from:owner1, value:20}));
       });
 
       it("should NOT allow anyone to buy paying less than asking price", async () => {
         await instance.registerVet(vet1,{from:_vetSociety});
         await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
-        await instance.updatePet(1,true,100,{from:owner1});
-        await catchRevert(instance.buyPet(1,{from:owner2, value:90}));
+        await instance.updatePet(1,true,10,{from:owner1});
+        await catchRevert(instance.buyPet(1,{from:owner2, value:9}));
       });
 
       it("should update balances of buyer and seller correctly", async () => {
         await instance.registerVet(vet1,{from:_vetSociety});
         await instance.registerPet(PetWorld.PetType.Dog,PetWorld.Gender.Male,"01-JAN-2001",owner1,"http://dummyurl", {from:vet1});
-        await instance.updatePet(1,true,100,{from:owner1});
+        await instance.updatePet(1,true,10,{from:owner1});
 
         var owner1BalanceBefore = await web3.eth.getBalance(owner1);
         var owner2BalanceBefore = await web3.eth.getBalance(owner2);
 
-        await instance.buyPet(1,{from:owner2, value:200});
+        await instance.buyPet(1,{from:owner2, value:20});
 
         var owner1BalanceAfter = await web3.eth.getBalance(owner1);
         var owner2BalanceAfter = await web3.eth.getBalance(owner2);
 
+        console.log("Owner 1 Balance Before "+owner1BalanceBefore);
+        console.log("Owner 1 Balance After "+owner1BalanceAfter);
+        console.log("Owner 2 Balance Before "+owner2BalanceBefore);
+        console.log("Owner 2 Balance After "+owner2BalanceAfter);
+
         assert.equal(
           new BN(owner1BalanceAfter).toString(),
-          new BN(owner1BalanceBefore).add(new BN(100)).toString(),
+          new BN(owner1BalanceBefore).add(new BN(10)).toString(),
           "Owner 1's balance should be increased by the price of the item",
         );
 
         assert.isBelow(
           Number(owner2BalanceAfter),
-          Number(new BN(owner2BalanceBefore).sub(new BN(100))),
+          Number(new BN(owner2BalanceBefore).sub(new BN(10))),
           "Owner 2's balance should be reduced by more than the price of the item (including gas costs)",
         );
 
