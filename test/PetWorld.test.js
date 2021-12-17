@@ -19,16 +19,16 @@ contract("PetWorld", function(accounts){
 
       it("should allow vet society to create vets", async () => {
         await instance.registerVet(vet1,{from:_vetSociety});
-
-        returnAddress = await instance.getVet(1);
+        const VETS_ROLE = web3.utils.soliditySha3("VETS_ROLE");
+         //const vetsCount = await instance.getRoleMemberCount(VETS_ROLE);
+        returnAddress = await instance.getRoleMember(VETS_ROLE,0);
         assert.equal(returnAddress.toLowerCase(),vet1.toLowerCase(),"UNABLE to register Vets");
       });
 
       it("should emit a VetCreated event when a Vet is created", async () => {
         let eventEmitted = false;
         const tx = await instance.registerVet(vet1,{from:_vetSociety});
-  
-        if (tx.logs[0].event == "VetCreated") {
+        if (tx.logs[1].event == "VetCreated") {
           eventEmitted = true;
         }
         assert.equal(

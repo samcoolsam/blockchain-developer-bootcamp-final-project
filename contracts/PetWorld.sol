@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity = 0.8.10;
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 
-contract PetWorld is Ownable{
+contract PetWorld is Ownable, AccessControlEnumerable {
+
+ bytes32 public constant  VETS_ROLE = keccak256("VETS_ROLE");
 
   uint totalPetCount = 0;
-  uint totalVetCount = 0;
 
   mapping(uint => Pet) pets;
-  mapping(uint => address) vets;
-
-  //address vetSociety;
 
   enum PetType{Cat, Dog}
   enum Gender{Male, Female}
@@ -28,17 +28,12 @@ contract PetWorld is Ownable{
     string offChainInfoURI;
   }
 
-  event VetCreated(uint id);
+  event VetCreated(bool b);
   event PetCreated(uint id);
   event PetDeleted(uint id);
   event PetUpdated(uint id);
   event PetSold(uint id);
   event PetGifted(uint id);
-
-//  modifier callerIsVetSociety () { 
-//     require (msg.sender == vetSociety, "Only vet society is allowed to perform this operation"); 
-//     _;
-//   }
 
   modifier callerIsPetOwner (uint id) { 
     require (msg.sender == pets[id].currentOwner, "Only current owner is allowed to perform this operation"); 
@@ -61,14 +56,7 @@ modifier validPrice (uint _price) {
   }
 
   modifier callerIsVet(address _address){
-    bool vetMatched = false;
-    for(uint i=1;i<= totalVetCount;i++){
-      if(vets[i] == _address){
-        vetMatched = true;
-        break;
-      }
-    }
-    require (vetMatched == true, "Only vets are allowed to perform this operation");
+    require(hasRole(VETS_ROLE, _address), "Only vets are allowed to perform this operation");
     _;
   }
 
@@ -84,14 +72,10 @@ modifier validPrice (uint _price) {
      pets[id].currentOwner.transfer(amountToRefund);
   }
 
+  // only contract owner (VET SOCIETY / GOVT) can register VETS
   function registerVet(address vet) public onlyOwner {
-    totalVetCount++;
-    vets[totalVetCount] = vet;
-    emit VetCreated(totalVetCount);
-  }
-
-  function getVet(uint id) public view returns (address vet){
-    return vets[id];
+    _setupRole(VETS_ROLE, vet);
+    emit VetCreated(true);
   }
 
   function registerPet(PetType _petType,Gender _gender,string memory _dob, address payable _currentOwner, string memory _uri) public callerIsVet(msg.sender){
