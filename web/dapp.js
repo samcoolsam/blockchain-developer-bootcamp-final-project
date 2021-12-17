@@ -563,7 +563,8 @@ let pwUpdatePetButton = document.getElementById("updatePet");
 
   let petUpdatedStatus = document.getElementById("petUpdatedStatus");
   try {
-      const tx = await petWorld.methods.updatePet(petID,saleFlag,price).send({from:ethereum.selectedAddress});
+      let ethPrice = web3.utils.toWei(price, 'ether');
+      const tx = await petWorld.methods.updatePet(petID,saleFlag,ethPrice).send({from:ethereum.selectedAddress});
       petUpdatedStatus.innerHTML ="<font color=green>Pet updated successfully</font>";
       setTimeout(() => {  petUpdatedStatus.innerHTML = ""; }, 5000);
   }
@@ -743,9 +744,8 @@ let buyPetButton = document.getElementById("buy-pet");
 
     console.log("Price "+selectedPetBuyingPrice);
 
-    price = web3.utils.toHex(web3.utils.toWei(selectedPetBuyingPrice, 'ether'));
   try {
-      const tx = await petWorld.methods.buyPet(petID).send({from:ethereum.selectedAddress, value:price});
+      const tx = await petWorld.methods.buyPet(petID).send({from:ethereum.selectedAddress, value:selectedPetBuyingPrice});
       petSold.innerHTML ="<font color=green>You have bought this pet!</font>";
       setTimeout(() => {  petSold.innerHTML = ""; }, 5000);
   }

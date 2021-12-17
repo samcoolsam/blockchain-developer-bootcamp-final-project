@@ -540,11 +540,6 @@ contract("PetWorld", function(accounts){
         var owner1BalanceAfter = await web3.eth.getBalance(owner1);
         var owner2BalanceAfter = await web3.eth.getBalance(owner2);
 
-        console.log("Owner 1 Balance Before "+owner1BalanceBefore);
-        console.log("Owner 1 Balance After "+owner1BalanceAfter);
-        console.log("Owner 2 Balance Before "+owner2BalanceBefore);
-        console.log("Owner 2 Balance After "+owner2BalanceAfter);
-
         assert.equal(
           new BN(owner1BalanceAfter).toString(),
           new BN(owner1BalanceBefore).add(new BN(10)).toString(),
