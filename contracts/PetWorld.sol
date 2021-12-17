@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.5.16 <0.9.0;
+pragma solidity = 0.8.10;
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract PetWorld {
+contract PetWorld is Ownable{
 
   uint totalPetCount = 0;
   uint totalVetCount = 0;
@@ -9,7 +10,7 @@ contract PetWorld {
   mapping(uint => Pet) pets;
   mapping(uint => address) vets;
 
-  address vetSociety;
+  //address vetSociety;
 
   enum PetType{Cat, Dog}
   enum Gender{Male, Female}
@@ -34,10 +35,10 @@ contract PetWorld {
   event PetSold(uint id);
   event PetGifted(uint id);
 
- modifier callerIsVetSociety () { 
-    require (msg.sender == vetSociety, "Only vet society is allowed to perform this operation"); 
-    _;
-  }
+//  modifier callerIsVetSociety () { 
+//     require (msg.sender == vetSociety, "Only vet society is allowed to perform this operation"); 
+//     _;
+//   }
 
   modifier callerIsPetOwner (uint id) { 
     require (msg.sender == pets[id].currentOwner, "Only current owner is allowed to perform this operation"); 
@@ -83,16 +84,7 @@ modifier validPrice (uint _price) {
      pets[id].currentOwner.transfer(amountToRefund);
   }
 
-  constructor() public {
-    // Vet Society deploys and initializes this smart contract.
-    vetSociety = msg.sender;
-  }
-
-  function getVetSociety() public returns (address vs){
-    return vetSociety;
-  }
-
-  function registerVet(address vet) public callerIsVetSociety(){
+  function registerVet(address vet) public onlyOwner {
     totalVetCount++;
     vets[totalVetCount] = vet;
     emit VetCreated(totalVetCount);
@@ -113,7 +105,7 @@ modifier validPrice (uint _price) {
       isAlive: true,
       forSale: false,
       price: 0,
-      previousOwner: 0x0000000000000000000000000000000000000000,
+      previousOwner: payable(0x0000000000000000000000000000000000000000),
       currentOwner: _currentOwner,
       offChainInfoURI: _uri
     });
@@ -139,7 +131,7 @@ function getPet(uint id) public view returns (uint _id, PetType _type, Gender _g
 
     pets[id].isAlive = false;
     pets[id].previousOwner = pets[id].currentOwner;
-    pets[id].currentOwner = 0x0000000000000000000000000000000000000000;
+    pets[id].currentOwner = payable(0x0000000000000000000000000000000000000000);
     emit PetDeleted(id);    
   }
 
@@ -160,7 +152,7 @@ function getPet(uint id) public view returns (uint _id, PetType _type, Gender _g
 
   function buyPet(uint id) public payable forSale(id) paidEnough(pets[id].price) callerIsNotPetOwner(id) refundExcess(id){
     pets[id].previousOwner = pets[id].currentOwner;
-    pets[id].currentOwner = msg.sender;
+    pets[id].currentOwner = payable(msg.sender);
     pets[id].forSale = false;
     uint _price = pets[id].price;
     pets[id].previousOwner.transfer(_price);

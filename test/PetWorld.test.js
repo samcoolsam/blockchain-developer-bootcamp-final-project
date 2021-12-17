@@ -15,15 +15,6 @@ contract("PetWorld", function(accounts){
         instance = await PetWorld.new({from: _vetSociety});
       });
 
-    describe("Initialization - Use Case", ()=>{
-
-        it("should save the address of Vet Society when initialized", async () => {
-          returnAddress = await instance.getVetSociety();
-          assert.equal(returnAddress.receipt.from.toLowerCase(),_vetSociety.toLowerCase(),"UNABLE to save VET SOCIETY ADDRESS AT INITIALIZATION");
-        });
-  
-    });
-
     describe("Vet Creation - Use Cases", ()=>{
 
       it("should allow vet society to create vets", async () => {

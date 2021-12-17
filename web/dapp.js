@@ -1,351 +1,364 @@
 document.getElementById("defaultOpen").click();
 
 let selectedPetBuyingPrice = 0;
-const pwAddress = '0xEB6C837FB058A7d021E3563acA7327f75756967c';
+const pwAddress = '0xA099fE5d2976844b2adE20B8e0d2b581A548ADB0';
 
 const pwABI = [
-    {
-      "inputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        }
-      ],
-      "name": "PetCreated",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        }
-      ],
-      "name": "PetDeleted",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        }
-      ],
-      "name": "PetGifted",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        }
-      ],
-      "name": "PetSold",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        }
-      ],
-      "name": "PetUpdated",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        }
-      ],
-      "name": "VetCreated",
-      "type": "event"
-    },
-    {
-      "constant": false,
-      "inputs": [],
-      "name": "getVetSociety",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "vs",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "vet",
-          "type": "address"
-        }
-      ],
-      "name": "registerVet",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        }
-      ],
-      "name": "getVet",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "vet",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "enum PetWorld.PetType",
-          "name": "_petType",
-          "type": "uint8"
-        },
-        {
-          "internalType": "enum PetWorld.Gender",
-          "name": "_gender",
-          "type": "uint8"
-        },
-        {
-          "internalType": "string",
-          "name": "_dob",
-          "type": "string"
-        },
-        {
-          "internalType": "address payable",
-          "name": "_currentOwner",
-          "type": "address"
-        },
-        {
-          "internalType": "string",
-          "name": "_uri",
-          "type": "string"
-        }
-      ],
-      "name": "registerPet",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        }
-      ],
-      "name": "getPet",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "enum PetWorld.PetType",
-          "name": "_type",
-          "type": "uint8"
-        },
-        {
-          "internalType": "enum PetWorld.Gender",
-          "name": "_gender",
-          "type": "uint8"
-        },
-        {
-          "internalType": "string",
-          "name": "_dob",
-          "type": "string"
-        },
-        {
-          "internalType": "bool",
-          "name": "_isAlive",
-          "type": "bool"
-        },
-        {
-          "internalType": "bool",
-          "name": "_forSale",
-          "type": "bool"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_price",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "_previousOwner",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_currentOwner",
-          "type": "address"
-        },
-        {
-          "internalType": "string",
-          "name": "_uri",
-          "type": "string"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        }
-      ],
-      "name": "deletePet",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "bool",
-          "name": "_forSale",
-          "type": "bool"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_price",
-          "type": "uint256"
-        }
-      ],
-      "name": "updatePet",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address payable",
-          "name": "receiver",
-          "type": "address"
-        }
-      ],
-      "name": "giftPet",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        }
-      ],
-      "name": "buyPet",
-      "outputs": [],
-      "payable": true,
-      "stateMutability": "payable",
-      "type": "function"
-    }
-  ]
-
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "PetCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "PetDeleted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "PetGifted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "PetSold",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "PetUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "VetCreated",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "vet",
+        "type": "address"
+      }
+    ],
+    "name": "registerVet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "getVet",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "vet",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum PetWorld.PetType",
+        "name": "_petType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum PetWorld.Gender",
+        "name": "_gender",
+        "type": "uint8"
+      },
+      {
+        "internalType": "string",
+        "name": "_dob",
+        "type": "string"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_currentOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_uri",
+        "type": "string"
+      }
+    ],
+    "name": "registerPet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "getPet",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum PetWorld.PetType",
+        "name": "_type",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum PetWorld.Gender",
+        "name": "_gender",
+        "type": "uint8"
+      },
+      {
+        "internalType": "string",
+        "name": "_dob",
+        "type": "string"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isAlive",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_forSale",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_price",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_previousOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_currentOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_uri",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "deletePet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_forSale",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_price",
+        "type": "uint256"
+      }
+    ],
+    "name": "updatePet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address payable",
+        "name": "receiver",
+        "type": "address"
+      }
+    ],
+    "name": "giftPet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "buyPet",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function",
+    "payable": true
+  }
+]
 //metamask - account 3  Ganache index 0
-//vetServicesAddress = 0x1c1abA612dd658b2d707F99d1c3d080000Cf2cbC;
+//vetServicesAddress/owner = 0xf91bB69dF9f126EC0fB918fC486780aF6F2dB497;
 
 //metamask - account 4 Ganache index 1
-//vet1Address = 0x44160523E58a95034E84f59938E65ca2d8e29411;
+//vet1Address = 0x77C67461DBa7F8C5EBA7a74a36CB6D25B10d48D6;
 
 //metamask - account 5 Ganache index 2
-//vet2Address = 0xF3be553401550aE80Deb6Ef6D4d1d0d8f48e1704;
+//vet2Address = 0xAD9076848502D206C0B29F04fE76033d3f1ceC9B;
 
 //metamask - account 6  Ganache index 3
-//owner1Address = 0x6515e5f89380832d367dA987A78154c3dEE75b75;
+//owner1Address = 0xf68B532df2963FaA02F1c6ac5f48b6d66a34dBa5;
 
 //metamask - account 7 Ganache index 4
-//owner2Address = 0xD7144CD6791De3E43D56d80E7F7a56157d61540d;
+//owner2Address = 0x75a80F000AEFE8FD4F92b9f874522027c1d7CF9F;
 
 //metamask - account 8 Ganache index 5
-//owner3Address = 0x95C2A37dD7Fb67054b134a6DD64e6A7F2b327843;
+//owner3Address = 0x6F87E71e5e62C73E54042d58446877DB5F151bC3;
 
 //metamask - account 9 Ganache index 6
-//buyer1Address = 0x6fb5628cCD54D995bCFb43929765C2B9C7e672C1;
+//buyer1Address = 0x2fc2Ad2DFB56293D695B49C15Bfbd89AC501ca56;
 
 //metamask - account 10 Ganache index 7
-//buyer2Address = 0xF30377E1F416Ad640DAC3a918626F9aAB9BFb61A;
+//buyer2Address = 0xFa24291625D3f2170F370f751F4e83A3Dc1deF22;
 
-//metamask - account 11 Ganache index 8
-//NOTUSE1 = 0x6b92CD5b76E44399E5b105e37772620ecCAce6D5;
-
-//metamask - account 12 Ganache index 9
-//NOTUSE2 = 0x4D57bD11367987F681f8D5bBc4130538eC06A698;
 
 function openTab(evt, tabName) {
   // Declare all variables
@@ -401,7 +414,7 @@ mmEnable.onclick = async () => {
     if (ethereum.chainId == 3){
         mmChain.innerHTML = "<font color='green'>Connected to: Ropsten</font>";
     } else {
-        mmChain.innerHTML = "<font color='red'>Please connect to Ropsten</font>";
+        mmChain.innerHTML = "<font color='red'>You are not on Ropsten.</font>";
     }
 };
 
@@ -454,22 +467,6 @@ pwCreatePetButton.onclick = async () => {
     let offChainURI = "nothing";
     let picture = document.getElementById("pet-picture").files;
     var web3 = new Web3(window.ethereum);
-
-
-    // const URL="https://api.pinata.cloud/data/testAuthentication";
-    // $.ajax({url:URL,
-    //   type: "GET",
-    //   headers:{
-    //     pinata_api_key: "0254cc66fef779207cda",
-    //     pinata_secret_api_key: "06f86af5c6944a7c1a7b9d878a0c789b4b25061f6c7535d0f0427316871d8b0e"
-    //   },
-    //   success: function(result){
-    //   console.log("hello how r u");
-    //   console.log(result);
-    //   },
-    //   error: function(error){
-    //     console.log("Unable to get complete action with pinata");
-    //   }});
       
     let formData = new FormData();
     formData.append('file',picture[0]);
@@ -629,7 +626,7 @@ let pwSearchPetButton = document.getElementById("searchPet");
       petDetails.innerHTML ="<table><tr><td>"+
       "Pet Id= "+displayPet[0]+"<br> Pet Type= "+displayPet[1]+
       "<br>Gender= "+displayPet[2]+"<br>Date of birth= "+displayPet[3]+"<br>Is Alive= "+displayPet[4]+"<br>For Sale= "+displayPet[5]+
-      "<br>Price= "+displayPet[6]+ "<br>Previous Owner= "+displayPet[7]+"<br>Current Owner= "+displayPet[8]+"</td>"+
+      "<br>Price= "+displayPet[6]+ " ETH<br>Previous Owner= "+displayPet[7]+"<br>Current Owner= "+displayPet[8]+"</td>"+
       "<td>"+displayPet[9]+"</td></tr></table>";
     }
   })
@@ -700,7 +697,8 @@ function convertPet(res){
   saleButton.disabled = false;}
 } 
  //price
- petArray[6] = res[6];
+  var temp = res[6] / 10**18;
+  petArray[6] = temp;
  selectedPetBuyingPrice = res[6];
 //previous owner
 petArray[7] = convertAddress(res[7]);
