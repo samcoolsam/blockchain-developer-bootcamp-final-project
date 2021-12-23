@@ -1,7 +1,11 @@
 document.getElementById("defaultOpen").click();
 
 let selectedPetBuyingPrice = 0;
-const pwAddress = '0x7c1846cDcDc8D9E15d3DfAa74501AaDE21252f2e';
+//Contract address on local Ganache
+//const pwAddress = '0x7c1846cDcDc8D9E15d3DfAa74501AaDE21252f2e';
+
+//Contract address on Ropsten
+const pwAddress = '0x8796751762f49a73BA438311932Fd72CD92E7355';
 
 const pwABI = [
   {
@@ -954,7 +958,7 @@ petArray[7] = convertAddress(res[7]);
 petArray[8] = convertAddress(res[8]);
 //moreInfo
 if(res[9] == "nothing"){
-  petArray[9] = "<img width=300 height=200 src='../resources/no-image.jpeg'/>";
+  petArray[9] = "<img width=300 height=200 src='resources/no-image.jpeg'/>";
 }
 else {
 petArray[9] = "<img src='https://gateway.pinata.cloud/ipfs/"+res[9]+"'/>";
