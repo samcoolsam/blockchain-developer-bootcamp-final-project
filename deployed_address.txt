@@ -3,6 +3,7 @@ These are all test accounts which you'll need to setup on your local MetaMask in
 
 Govt/Vet Services - This address is used to deploy the contract on Ropsten network and hence the owner of the contract and work as Govt./Vet Services.
 Address: 0xD847b2EbC963CDF37bEe3ff4BE23EDc7098Dca55
+
 If you use local Ganache for testing then the first address which Ganache will provide will become the "Govt/Vet Service" address and then you can use rest of the addresses provided by ganache to simulate vets, owners and buyers.
 
 Vet 1

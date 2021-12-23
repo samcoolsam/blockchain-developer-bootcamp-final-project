@@ -12,12 +12,17 @@ A DAPP called "PetWorld" - where
 # Directory Structure
 - contracts - Contains PetWorld.sol (main contract)
 - migrations - Contains migration and deployment js file
-- resources - Contains a few image files which can be used during pet creation.
 - test - contains PetWorld.test.js - the main file where the unit tests exists.
 - web - contains the index.html (the main front end file) with supporting dapp.js and main.css
 
 
 # Front end URL: https://61c4a6b0b5ffa3f1b95635df--elegant-rosalind-0390a4.netlify.app/
+
+# Video Recording of working project on Ropsten: https://youtu.be/C09wfVEKbgQ
+
+# Account to recieve certificate as NFT : 0xE4449F724b7c71cF5E9c25DB3E378A327Df57308
+
+Please also do send the certificate via email bakshi.sameer@gmail.com
 
 
 # How to run local tests
@@ -31,3 +36,6 @@ A DAPP called "PetWorld" - where
 7. Run "truffle migrate"
 8. Run "truffle deploy"
 9. Open project in VS Code, locate web/index.html (right click on it and select "Open with Live Server")
+10. Configure the addresses in Metamask (as mentioned in deployed_addresses.txt) file.
+11. Watch the online video as training exercise to understand the capabilities of the system.
+12. Have fun and play with the locally deployed smart contract.
