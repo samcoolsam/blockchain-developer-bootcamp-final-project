@@ -5,11 +5,19 @@ A DAPP called "PetWorld" - where
 2. ONLY Vets can register pets (when they insert a chip).
 3. ONLY Vets can de-register pets (mark them as dead). They can de-regiter any pet.
 4. Owners can gift their pets to others for free.
-5. Anyone can buy a pet which they currently down own, is alive and is available for sale.
-6. Only current pet owners can update their pet details to set a price and enable/disable them for sale.
+5. Anyone can buy a pet which they currently don't own, is alive and is available for sale.
+6. The moment a pet is sold, its previous owner and current owner details are updated and it's marked as "not for sale".
+7. Only current pet owners can update their pet details to set a price and enable/disable them for sale.
+
+# Directory Structure
+- contracts - Contains PetWorld.sol (main contract)
+- migrations - Contains migration and deployment js file
+- resources - Contains a few image files which can be used during pet creation.
+- test - contains PetWorld.test.js - the main file where the unit tests exists.
+- web - contains the index.html (the main front end file) with supporting dapp.js and main.css
 
 
-Front end URL: <TBD>
+# Front end URL: <TBD>
 
 
 # How to run local tests

@@ -1,0 +1,36 @@
+These are all test accounts which you'll need to setup on your local MetaMask in order to simulate the scenarios as shown in the recorded video if you connect to Ropsten TestNet.
+
+If you use local Ganache then the first address which Ganache will provide will become the "Govt/Vet Service" address and then you can use rest of the addresses provided by ganache to simulate vets, owners and buyers.
+
+
+Govt/Vet Services - This address is used to deploy the contract
+Address: 0xf91bB69dF9f126EC0fB918fC486780aF6F2dB497
+Private Key: 3729392fe24136e0a96d22bd1de7639d973500371c692100d782a1572e4c19bc
+
+Vet 1
+Address: 0x77C67461DBa7F8C5EBA7a74a36CB6D25B10d48D6
+Private Key: 7c47a334595082e0fbdae57cac614d0b7777ffb2664ed1efdfa60a3871a0124f
+
+Vet 2
+Address: 0xAD9076848502D206C0B29F04fE76033d3f1ceC9B
+Private Key: 1679ff989ebf9a4ec0f7ceee92466d20058e3a8ea2aaa25d73711b57bb7e5226
+
+Owner 1
+Address: 0xf68B532df2963FaA02F1c6ac5f48b6d66a34dBa5
+Private Key: e9474a05405d1329b8672cbb445fc5b392f5e5e96e507757dc079eebb5a303fb
+
+Owner 2
+Address: 0x75a80F000AEFE8FD4F92b9f874522027c1d7CF9F
+Private Key: ac4948e9fe68468a7343a7b2a7315bb2912bcfc00e22c8ac127e7b20511b8ecd
+
+Owner 3
+Address: 0x6F87E71e5e62C73E54042d58446877DB5F151bC3
+Private Key: a775d987e3a0083b352e6b37b447f7699da81ec64dde2f08895b112863ebd4d6
+
+Buyer 1
+Address: 0x2fc2Ad2DFB56293D695B49C15Bfbd89AC501ca56
+Private Key: 4b87144d212b894be3d0c1bffafcaf8dda60f52edb23fe75a31393c949bb1646
+
+Buyer 2
+Address: 0xFa24291625D3f2170F370f751F4e83A3Dc1deF22
+Private Key: 92fd6905dcb162f314563a028ff45be468289e2c69f37fd10703773e22846ffb
