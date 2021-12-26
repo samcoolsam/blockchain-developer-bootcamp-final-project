@@ -16,13 +16,18 @@ A DAPP called "PetWorld" - where
 - web - contains the index.html (the main front end file) with supporting dapp.js and main.css
 
 
-# Front end URL: https://61c4a6b0b5ffa3f1b95635df--elegant-rosalind-0390a4.netlify.app/
+# Front end URL: 
+- https://61c4a6b0b5ffa3f1b95635df--elegant-rosalind-0390a4.netlify.app/
 
-# Video Recording of working project on Ropsten: https://youtu.be/C09wfVEKbgQ
+# Video Recording of working project on Ropsten: 
 
-# Account to recieve certificate as NFT : 0xE4449F724b7c71cF5E9c25DB3E378A327Df57308
+- https://youtu.be/C09wfVEKbgQ
 
-Please also do send the certificate via email bakshi.sameer@gmail.com
+# Account to recieve certificate as NFT : 
+
+- Address: 0xE4449F724b7c71cF5E9c25DB3E378A327Df57308
+
+- Please also do send the certificate via email bakshi.sameer@gmail.com
 
 
 # How to run local tests
